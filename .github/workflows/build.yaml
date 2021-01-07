@@ -22,7 +22,7 @@ jobs:
           path: build-guidelines-action.tgz
   test_docker:
     name: Test Docker Image
-    runs-on: ubunutu-20.04
+    runs-on: ubuntu-20.04
     needs:
       - build_docker
     env:
