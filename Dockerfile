@@ -1,4 +1,7 @@
-FROM pandoc/latex:2.11.2
+FROM pandoc/latex:2.11.3.2
+
+# Update tlmgr if necessary
+RUN tlmgr update --self
 
 # Install the necessary LaTeX packages
 RUN tlmgr install \
@@ -10,6 +13,7 @@ RUN tlmgr install \
   everypage \
   fancyhdr \
   latexdiff \
+  multirow \
   parskip \
   sourcecodepro \
   sourcesanspro \

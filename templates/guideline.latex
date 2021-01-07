@@ -21,7 +21,7 @@
 \usepackage{graphicx}
 
 % Used by Pandoc tables
-\usepackage{longtable,booktabs, array}
+\usepackage{longtable,booktabs,array,multirow}
 \usepackage{calc}
 
 % Configure colors

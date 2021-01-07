@@ -1,0 +1,11 @@
+name: Build
+on: [push, pull_request]
+jobs:
+  build_docker:
+    name: Build Docker Image
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Build Image
+        run: docker build .
