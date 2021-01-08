@@ -19,3 +19,5 @@ copyright: |
 This is a test of a [broken link](#section-four)
 
 # 3. SECTION THREE
+
+This is a test of a [good link](#3-section-three)
