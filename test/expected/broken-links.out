@@ -1,5 +1,5 @@
 ::group::Checking links
 + pandoc -f markdown --table-of-contents -s -t gfm --lua-filter=/cabforum/filters/broken-links.lua -o /dev/null /data/broken-links.md
 ::error::Unable to resolve link to section-four
-::endgroup::
 + set +x
+::endgroup::

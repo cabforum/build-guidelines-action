@@ -23,7 +23,7 @@ RUN tlmgr install \
   xecjk
 
 # Install bash
-RUN apk add bash
+RUN apk add bash coreutils
 
 RUN mkdir -p /tmp/fonts && \
     mkdir -p /usr/share/fonts && \
@@ -39,6 +39,7 @@ RUN mkdir -p /cabforum/templates
 RUN mkdir -p /cabforum/filters
 
 COPY entrypoint.sh /cabforum/entrypoint.sh
+COPY build.sh /cabforum/build.sh
 COPY templates/ /cabforum/templates/
 COPY filters/ /cabforum/filters/
 
