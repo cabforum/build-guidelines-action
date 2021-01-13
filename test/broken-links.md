@@ -21,3 +21,8 @@ This is a test of a [broken link](#section-four)
 # 3. SECTION THREE
 
 This is a test of a [good link](#3-section-three)
+
+# 4. SECTION FOUR
+
+This is a test of an [external link](https://tools.ietf.org/html/rfc5280#section-4.1)
+that has a fragment identifier, but to another resource.
