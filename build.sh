@@ -51,7 +51,7 @@ if [ "$INPUT_PDF" = "true" ]; then
   set -x
   pandoc "${PANDOC_ARGS[@]}" -t latex --template=/cabforum/templates/guideline.latex -o "${BASE_FILE}.tex" "${1}"
   TEXINPUTS="${TEXINPUTS}:/cabforum/" pandoc "${PANDOC_PDF_ARGS[@]}"
-  set +x
+  { set +x; } 2>/dev/null
   echo "::set-output name=pdf_file::${BASE_FILE}.pdf"
   echo "::endgroup::"
 
@@ -67,7 +67,7 @@ if [ "$INPUT_PDF" = "true" ]; then
     TEXINPUTS="${TEXINPUTS}:/cabforum/" xelatex -interaction=nonstopmode --output-directory="${TMP_DIR}" "${OUT_DIFF_TEX}-redline.tex" || true
     TEXINPUTS="${TEXINPUTS}:/cabforum/" xelatex -interaction=nonstopmode --output-directory="${TMP_DIR}" "${OUT_DIFF_TEX}-redline.tex" || true
     TEXINPUTS="${TEXINPUTS}:/cabforum/" xelatex -interaction=nonstopmode --output-directory="${TMP_DIR}" "${OUT_DIFF_TEX}-redline.tex" || true
-    set +x
+    { set +x; } 2>/dev/null
     if [ -f "${OUT_DIFF_TEX}-redline.pdf" ]; then
       cp "${OUT_DIFF_TEX}-redline.pdf" "${BASE_FILE}-redline.pdf"
       echo "::set-output name=pdf_redline_file::${BASE_FILE}-redline.pdf"
@@ -86,7 +86,7 @@ if [ "$INPUT_DOCX" = "true" ]; then
 
   set -x
   pandoc "${PANDOC_DOCX_ARGS[@]}"
-  set +x
+  { set +x; } 2>/dev/null
   echo "::set-output name=docx_file::${BASE_FILE}.docx"
   echo "::endgroup::"
 fi
@@ -100,6 +100,6 @@ if [ "$INPUT_LINT" = "true" ]; then
 
   set -x
   pandoc "${PANDOC_LINT_ARGS[@]}"
-  set +x
+  { set +x; } 2>/dev/null
   echo "::endgroup::"
 fi
