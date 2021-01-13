@@ -1,5 +1,5 @@
 ::group::Checking links
-+ pandoc -f markdown+gfm_auto_identifiers --table-of-contents -s -t gfm --lua-filter=/cabforum/filters/broken-links.lua -o /dev/null /data/broken-links.md
+pandoc -f markdown+gfm_auto_identifiers --table-of-contents -s -t gfm --lua-filter=/cabforum/filters/broken-links.lua -o /dev/null /data/broken-links.md
 ::error::Unable to resolve link to section-four
 Valid identifiers are:
 

@@ -3,6 +3,7 @@ $(error DOCKER_TAG variable should contain the Docker tag being tested)
 endif
 
 makefile_path := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
+TMP := $(shell mktemp -d)
 
 .PHONY: test
 test: test-broken-links test-good
@@ -14,8 +15,8 @@ test-broken-links: broken-links.md
 			-e INPUT_PDF=false \
 			-e INPUT_DOCX=false \
 			$(DOCKER_TAG) \
-			/data/broken-links.md 2>&1 | \
-			diff -aurN expected/broken-links.out - | \
+			/data/broken-links.md &> $(TMP)/broken-links-actual.out
+	diff -aurN expected/broken-links.out $(TMP)/broken-links-actual.out | \
 			sed -e 's/^/$@: /;'
 	echo "::endgroup::"
 

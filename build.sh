@@ -9,6 +9,11 @@ INPUT_LINT="${INPUT_LINT:-false}"
 INPUT_DIFF_FILE="${INPUT_DIFF_FILE:-}"
 TEXINPUTS="${TEXINPUTS:-}"
 
+LogAndRun() {
+  echo "$@"
+  "$@"
+}
+
 if [ "$#" -ne 1 ]; then
   echo "No markdown file specified"
   echo "Usage: $0 <markdown_file.md>"
@@ -48,10 +53,8 @@ if [ "$INPUT_PDF" = "true" ]; then
   PANDOC_PDF_ARGS+=( --template=/cabforum/templates/guideline.latex )
   PANDOC_PDF_ARGS+=( -o "${BASE_FILE}.pdf" "${1}" )
 
-  set -x
-  pandoc "${PANDOC_ARGS[@]}" -t latex --template=/cabforum/templates/guideline.latex -o "${BASE_FILE}.tex" "${1}"
-  TEXINPUTS="${TEXINPUTS}:/cabforum/" pandoc "${PANDOC_PDF_ARGS[@]}"
-  { set +x; } 2>/dev/null
+  LogAndRun pandoc "${PANDOC_ARGS[@]}" -t latex --template=/cabforum/templates/guideline.latex -o "${BASE_FILE}.tex" "${1}"
+  TEXINPUTS="${TEXINPUTS}:/cabforum/" LogAndRun pandoc "${PANDOC_PDF_ARGS[@]}"
   echo "::set-output name=pdf_file::${BASE_FILE}.pdf"
   echo "::endgroup::"
 
@@ -60,14 +63,12 @@ if [ "$INPUT_PDF" = "true" ]; then
     TMP_DIR=$(mktemp -d)
     OUT_DIFF_TEX=$(basename "${DIFF_FILE}" ".md")
     OUT_DIFF_TEX="${TMP_DIR}/${OUT_DIFF_TEX}"
-    set -x
-    pandoc "${PANDOC_ARGS[@]}" -t latex --template=/cabforum/templates/guideline.latex -o "${OUT_DIFF_TEX}.tex" "${DIFF_FILE}"
-    latexdiff --packages=hyperref "${OUT_DIFF_TEX}.tex" "${BASE_FILE}.tex" > "${OUT_DIFF_TEX}-redline.tex"
+    LogAndRun pandoc "${PANDOC_ARGS[@]}" -t latex --template=/cabforum/templates/guideline.latex -o "${OUT_DIFF_TEX}.tex" "${DIFF_FILE}"
+    LogAndRun latexdiff --packages=hyperref "${OUT_DIFF_TEX}.tex" "${BASE_FILE}.tex" > "${OUT_DIFF_TEX}-redline.tex"
     # Three runs in total are required (and match what Pandoc does under the hood)
-    TEXINPUTS="${TEXINPUTS}:/cabforum/" xelatex -interaction=nonstopmode --output-directory="${TMP_DIR}" "${OUT_DIFF_TEX}-redline.tex" || true
-    TEXINPUTS="${TEXINPUTS}:/cabforum/" xelatex -interaction=nonstopmode --output-directory="${TMP_DIR}" "${OUT_DIFF_TEX}-redline.tex" || true
-    TEXINPUTS="${TEXINPUTS}:/cabforum/" xelatex -interaction=nonstopmode --output-directory="${TMP_DIR}" "${OUT_DIFF_TEX}-redline.tex" || true
-    { set +x; } 2>/dev/null
+    TEXINPUTS="${TEXINPUTS}:/cabforum/" LogAndRun xelatex -interaction=nonstopmode --output-directory="${TMP_DIR}" "${OUT_DIFF_TEX}-redline.tex" || true
+    TEXINPUTS="${TEXINPUTS}:/cabforum/" LogAndRun xelatex -interaction=nonstopmode --output-directory="${TMP_DIR}" "${OUT_DIFF_TEX}-redline.tex" || true
+    TEXINPUTS="${TEXINPUTS}:/cabforum/" LogAndRun xelatex -interaction=nonstopmode --output-directory="${TMP_DIR}" "${OUT_DIFF_TEX}-redline.tex" || true
     if [ -f "${OUT_DIFF_TEX}-redline.pdf" ]; then
       cp "${OUT_DIFF_TEX}-redline.pdf" "${BASE_FILE}-redline.pdf"
       echo "::set-output name=pdf_redline_file::${BASE_FILE}-redline.pdf"
@@ -84,9 +85,7 @@ if [ "$INPUT_DOCX" = "true" ]; then
   PANDOC_DOCX_ARGS+=( --reference-doc=/cabforum/templates/guideline.docx )
   PANDOC_DOCX_ARGS+=( -o "${BASE_FILE}.docx" "${1}" )
 
-  set -x
-  pandoc "${PANDOC_DOCX_ARGS[@]}"
-  { set +x; } 2>/dev/null
+  LogAndRun pandoc "${PANDOC_DOCX_ARGS[@]}"
   echo "::set-output name=docx_file::${BASE_FILE}.docx"
   echo "::endgroup::"
 fi
@@ -98,8 +97,6 @@ if [ "$INPUT_LINT" = "true" ]; then
   PANDOC_LINT_ARGS+=( --lua-filter=/cabforum/filters/broken-links.lua )
   PANDOC_LINT_ARGS+=( -o /dev/null "${1}" )
 
-  set -x
-  pandoc "${PANDOC_LINT_ARGS[@]}"
-  { set +x; } 2>/dev/null
+  LogAndRun pandoc "${PANDOC_LINT_ARGS[@]}"
   echo "::endgroup::"
 fi
