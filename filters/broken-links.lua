@@ -24,7 +24,7 @@ function Inline (i)
 end
 
 function Link (l)
-  local anchor = l.target:match('#(.*)')
+  local anchor = l.target:match('^#(.*)')
   if anchor and not identifiers[anchor] then
     io.stdout:write("::error::Unable to resolve link to " .. anchor .. "\n")
     had_error = true

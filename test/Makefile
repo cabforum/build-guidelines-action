@@ -5,6 +5,7 @@ endif
 SHELL = /bin/bash
 
 makefile_path := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
+TMP := $(shell mktemp -d)
 
 # Generate a random token per invocation that can be used to disable/enable
 # GitHub command processing.
@@ -21,9 +22,9 @@ test-broken-links: broken-links.md
 			-e INPUT_PDF=false \
 			-e INPUT_DOCX=false \
 			$(DOCKER_TAG) \
-			/data/broken-links.md 2>&1 | \
-			diff -aurN expected/broken-links.out -
-	@echo "::$(stop_token)::"
+			/data/broken-links.md &> $(TMP)/broken-links-actual.out
+	diff -aurN expected/broken-links.out $(TMP)/broken-links-actual.out
+  @echo "::$(stop_token)::"
 	@echo "::endgroup::"
 
 .PHONY: test-good
