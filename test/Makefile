@@ -24,7 +24,7 @@ test-broken-links: broken-links.md
 			$(DOCKER_TAG) \
 			/data/broken-links.md &> $(TMP)/broken-links-actual.out
 	diff -aurN expected/broken-links.out $(TMP)/broken-links-actual.out
-  @echo "::$(stop_token)::"
+	@echo "::$(stop_token)::"
 	@echo "::endgroup::"
 
 .PHONY: test-good
