@@ -49,7 +49,7 @@ if [ -n "${INPUT_DIFF_FILE}" ]; then
   fi
 fi
 
-PANDOC_ARGS=( -f markdown+gfm_auto_identifiers --table-of-contents -s )
+PANDOC_ARGS=( -f markdown+gfm_auto_identifiers --table-of-contents -s --no-highlight )
 
 if [ "$INPUT_DRAFT" = "true" ]; then
   echo "Draft detected. Adding draft watermark"

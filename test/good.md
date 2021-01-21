@@ -47,3 +47,20 @@ copyright: |
 # SECTION THREE
 
 This is a link to [Section 2.1.1](#another).
+
+# SECTION FOUR
+
+This tests syntax highlighting.
+
+```asn1
+HumorValue ::= ENUMERATED {
+    Highly      (0),
+    Moderately  (1),
+    ...
+}
+
+Example ::= SEQUENCE {
+    Useful    BOOLEAN DEFAULT FALSE,
+    Amusing   HumorValue
+}
+```
