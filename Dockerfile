@@ -1,4 +1,4 @@
-FROM pandoc/latex:2.11.3.2
+FROM pandoc/latex:2.11.4
 
 # Update tlmgr if necessary
 RUN tlmgr update --self
