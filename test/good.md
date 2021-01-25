@@ -50,7 +50,7 @@ This is a link to [Section 2.1.1](#another).
 
 # SECTION FOUR
 
-This tests syntax highlighting.
+This tests syntax highlighting (namely, that nothing gets highlighted, but also nothing breaks).
 
 ```asn1
 HumorValue ::= ENUMERATED {
