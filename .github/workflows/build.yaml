@@ -5,12 +5,12 @@ jobs:
     name: Build Docker Image
     runs-on: ubuntu-20.04
     env:
-      DOCKER_TAG: cabforum/build-guidelines-action
+      DOCKER_TAG: build-guidelines-action
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Build Image
-        run: docker build --tag ${{ env.DOCKER_TAG}} .
+        run: docker build . --file Dockerfile --tag ${{ env.DOCKER_TAG}} --label "runnumber=${GITHUB_RUN_ID}"
       - name: Save image
         run: |
           docker save ${{ env.DOCKER_TAG }} |\
@@ -20,13 +20,14 @@ jobs:
         with:
           name: build-guidelines-action
           path: build-guidelines-action.tgz
+
   test_docker:
     name: Test Docker Image
     runs-on: ubuntu-20.04
     needs:
       - build_docker
     env:
-      DOCKER_TAG: cabforum/build-guidelines-action
+      DOCKER_TAG: build-guidelines-action
     steps:
       - name: Fetch Image
         uses: actions/download-artifact@v2
@@ -39,3 +40,41 @@ jobs:
         uses: actions/checkout@v2
       - name: Test
         run: make -C test test
+
+  publish:
+    if: ${{ github.event_name != 'pull_request' }}
+    name: Publish (Push only)
+    runs-on: ubuntu-20.04
+    needs:
+      - test_docker
+    env:
+      DOCKER_TAG: build-guidelines-action
+    steps:
+      - name: Fetch Image
+        uses: actions/download-artifact@v2
+        with:
+          name: build-guidelines-action
+          path: build-guidelines-action
+      - name: Load image
+        run: docker load --input build-guidelines-action/build-guidelines-action.tgz
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Push image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$DOCKER_TAG
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Use Docker 'latest' tag convention
+          [ "$VERSION" == "main" ] && VERSION=latest
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag $DOCKER_TAG $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
+          if [ "${{ github.event_name }}" = "push" ]; then
+            docker tag $IMAGE_ID:$VERSION $IMAGE_ID:sha-${GITHUB_SHA::8}
+            docker push $IMAGE_ID:sha-${GITHUB_SHA::8}
+          fi
