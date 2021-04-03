@@ -2,6 +2,7 @@
 
 set -euo pipefail
 
+INPUT_MARKDOWN_FILE="${INPUT_MARKDOWN_FILE:-}"
 INPUT_DRAFT="${INPUT_DRAFT:-false}"
 INPUT_PDF="${INPUT_PDF:-true}"
 INPUT_DOCX="${INPUT_DOCX:-true}"
@@ -25,20 +26,19 @@ LogAndRun() {
   "$@"
 }
 
-if [ "$#" -ne 1 ]; then
-  echo "No markdown file specified"
-  echo "Usage: $0 <markdown_file.md>"
+if [ -z "${INPUT_MARKDOWN_FILE}" ]; then
+  echo "An input markdown file MUST be specified via the markdown_file argument"
   exit 1
 fi
-if [ ! -f "$1" ]; then
-  echo "Invalid file specified: ${1} cannot be found."
+if [ ! -f "${INPUT_MARKDOWN_FILE}" ]; then
+  echo "Invalid file specified: ${INPUT_MARKDOWN_FILE} cannot be found."
   exit 1
 fi
-if [ "${1##*.}" != "md" ] ; then
-  echo "Invalid file specified: ${1} is not a Markdown file."
+if [ "${INPUT_MARKDOWN_FILE##*.}" != "md" ] ; then
+  echo "Invalid file specified: ${INPUT_MARKDOWN_FILE} is not a Markdown file."
   exit 1
 fi
-BASE_FILE="${1%.*}"
+BASE_FILE="${INPUT_MARKDOWN_FILE%.*}"
 
 DIFF_FILE=
 if [ -n "${INPUT_DIFF_FILE}" ]; then
@@ -62,9 +62,9 @@ if [ "$INPUT_PDF" = "true" ]; then
   PANDOC_PDF_ARGS=( "${PANDOC_ARGS[@]}" )
   PANDOC_PDF_ARGS+=( -t latex --pdf-engine=xelatex )
   PANDOC_PDF_ARGS+=( --template=/cabforum/templates/guideline.latex )
-  PANDOC_PDF_ARGS+=( -o "${BASE_FILE}.pdf" "${1}" )
+  PANDOC_PDF_ARGS+=( -o "${BASE_FILE}.pdf" "${INPUT_MARKDOWN_FILE}" )
 
-  LogAndRun pandoc "${PANDOC_ARGS[@]}" -t latex --template=/cabforum/templates/guideline.latex -o "${BASE_FILE}.tex" "${1}"
+  LogAndRun pandoc "${PANDOC_ARGS[@]}" -t latex --template=/cabforum/templates/guideline.latex -o "${BASE_FILE}.tex" "${INPUT_MARKDOWN_FILE}"
   TEXINPUTS="${TEXINPUTS}:/cabforum/" LogAndRun pandoc "${PANDOC_PDF_ARGS[@]}"
   echo "::set-output name=pdf_file::${BASE_FILE}.pdf"
   echo "::endgroup::"
@@ -94,7 +94,7 @@ if [ "$INPUT_DOCX" = "true" ]; then
   PANDOC_DOCX_ARGS=( "${PANDOC_ARGS[@]}" )
   PANDOC_DOCX_ARGS+=( -t docx )
   PANDOC_DOCX_ARGS+=( --reference-doc=/cabforum/templates/guideline.docx )
-  PANDOC_DOCX_ARGS+=( -o "${BASE_FILE}.docx" "${1}" )
+  PANDOC_DOCX_ARGS+=( -o "${BASE_FILE}.docx" "${INPUT_MARKDOWN_FILE}" )
 
   LogAndRun pandoc "${PANDOC_DOCX_ARGS[@]}"
   echo "::set-output name=docx_file::${BASE_FILE}.docx"
@@ -106,7 +106,7 @@ if [ "$INPUT_LINT" = "true" ]; then
   PANDOC_LINT_ARGS=( "${PANDOC_ARGS[@]}" )
   PANDOC_LINT_ARGS+=( -t gfm )
   PANDOC_LINT_ARGS+=( --lua-filter=/cabforum/filters/broken-links.lua )
-  PANDOC_LINT_ARGS+=( -o /dev/null "${1}" )
+  PANDOC_LINT_ARGS+=( -o /dev/null "${INPUT_MARKDOWN_FILE}" )
 
   LogAndRun pandoc "${PANDOC_LINT_ARGS[@]}"
   echo "::endgroup::"
