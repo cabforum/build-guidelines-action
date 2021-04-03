@@ -21,8 +21,9 @@ test-broken-links: broken-links.md
 			-e INPUT_LINT=true \
 			-e INPUT_PDF=false \
 			-e INPUT_DOCX=false \
+			-e INPUT_MARKDOWN_FILE=/data/broken-links.md \
 			$(DOCKER_TAG) \
-			/data/broken-links.md &> $(TMP)/broken-links-actual.out
+			&> $(TMP)/broken-links-actual.out
 	diff -aurN expected/broken-links.out $(TMP)/broken-links-actual.out
 	@echo "::$(stop_token)::"
 	@echo "::endgroup::"
@@ -41,8 +42,8 @@ good.pdf: good.md
 		-e INPUT_PDF=true \
 		-e INPUT_DOCX=false \
 		-e INPUT_DRAFT=true \
-		$(DOCKER_TAG) \
-		/data/good.md
+		-e INPUT_MARKDOWN_FILE=/data/good.md \
+		$(DOCKER_TAG)
 	@echo "::$(stop_token)::"
 	@echo "::endgroup::"
 
@@ -53,8 +54,8 @@ good.docx: good.md
 		-e INPUT_LINT=false \
 		-e INPUT_PDF=false \
 		-e INPUT_DOCX=true \
-		$(DOCKER_TAG) \
-		/data/good.md
+		-e INPUT_MARKDOWN_FILE=/data/good.md \
+		$(DOCKER_TAG)
 	@echo "::$(stop_token)::"
 	@echo "::endgroup::"
 
@@ -67,8 +68,8 @@ good-redline.pdf: good.md good-diff.md
 		-e INPUT_DOCX=false \
 		-e INPUT_DRAFT=true \
 		-e INPUT_DIFF_FILE=/data/good-diff.md \
-		$(DOCKER_TAG) \
-		/data/good.md
+		-e INPUT_MARKDOWN_FILE=/data/good.md \
+		$(DOCKER_TAG)
 	@echo "::$(stop_token)::"
 	@echo "::endgroup::"
 
