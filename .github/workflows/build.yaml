@@ -8,7 +8,7 @@ jobs:
       DOCKER_TAG: build-guidelines-action
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
       - name: Build Image
         run: docker build . --file Dockerfile --tag ${{ env.DOCKER_TAG}} --label "runnumber=${GITHUB_RUN_ID}"
       - name: Save image
@@ -37,7 +37,7 @@ jobs:
       - name: Load image
         run: docker load --input build-guidelines-action/build-guidelines-action.tgz
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
       - name: Test
         run: make -C test test
 
