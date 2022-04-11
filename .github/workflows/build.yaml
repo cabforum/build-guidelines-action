@@ -30,7 +30,7 @@ jobs:
       DOCKER_TAG: build-guidelines-action
     steps:
       - name: Fetch Image
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: build-guidelines-action
           path: build-guidelines-action
@@ -51,7 +51,7 @@ jobs:
       DOCKER_TAG: build-guidelines-action
     steps:
       - name: Fetch Image
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: build-guidelines-action
           path: build-guidelines-action
