@@ -16,7 +16,7 @@ jobs:
           docker save ${{ env.DOCKER_TAG }} |\
           gzip > build-guidelines-action.tgz
       - name: Upload archive
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: build-guidelines-action
           path: build-guidelines-action.tgz
