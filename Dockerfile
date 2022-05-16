@@ -13,6 +13,7 @@ RUN tlmgr install \
   enumitem \
   everypage \
   fancyhdr \
+  floatrow \
   latexdiff \
   multirow \
   parskip \

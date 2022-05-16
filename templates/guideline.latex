@@ -53,6 +53,9 @@
 \cftsetindents{subsubsection}{3em}{1em}
 \cftsetindents{paragraph}{4em}{1em}
 
+% Left Align Tables
+\usepackage[margins=raggedright]{floatrow}
+
 % Make tables smaller than the rest of the document
 \let\oldlongtable\longtable
 \let\oldendlongtable\endlongtable
