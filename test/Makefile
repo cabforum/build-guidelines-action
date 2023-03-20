@@ -6,6 +6,7 @@ SHELL = /bin/bash
 
 makefile_path := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
 TMP := $(shell mktemp -d)
+GITHUB_OUTPUT ?= /dev/null
 
 # Generate a random token per invocation that can be used to disable/enable
 # GitHub command processing.
@@ -22,6 +23,7 @@ test-broken-links: broken-links.md
 			-e INPUT_PDF=false \
 			-e INPUT_DOCX=false \
 			-e INPUT_MARKDOWN_FILE=/data/broken-links.md \
+			-e GITHUB_OUTPUT=$GITHUB_OUTPUT \
 			$(DOCKER_TAG) \
 			&> $(TMP)/broken-links-actual.out
 	diff -aurN expected/broken-links.out $(TMP)/broken-links-actual.out
@@ -43,6 +45,7 @@ good.pdf: good.md
 		-e INPUT_DOCX=false \
 		-e INPUT_DRAFT=true \
 		-e INPUT_MARKDOWN_FILE=/data/good.md \
+		-e GITHUB_OUTPUT=$GITHUB_OUTPUT \
 		$(DOCKER_TAG)
 	@echo "::$(stop_token)::"
 	@echo "::endgroup::"
@@ -55,6 +58,7 @@ good.docx: good.md
 		-e INPUT_PDF=false \
 		-e INPUT_DOCX=true \
 		-e INPUT_MARKDOWN_FILE=/data/good.md \
+		-e GITHUB_OUTPUT=$GITHUB_OUTPUT \
 		$(DOCKER_TAG)
 	@echo "::$(stop_token)::"
 	@echo "::endgroup::"
@@ -69,6 +73,7 @@ good-redline.pdf: good.md good-diff.md
 		-e INPUT_DRAFT=true \
 		-e INPUT_DIFF_FILE=/data/good-diff.md \
 		-e INPUT_MARKDOWN_FILE=/data/good.md \
+		-e GITHUB_OUTPUT=$GITHUB_OUTPUT \
 		$(DOCKER_TAG)
 	@echo "::$(stop_token)::"
 	@echo "::endgroup::"

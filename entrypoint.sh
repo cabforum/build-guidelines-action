@@ -66,7 +66,7 @@ if [ "$INPUT_PDF" = "true" ]; then
 
   LogAndRun pandoc "${PANDOC_ARGS[@]}" -t latex --template=/cabforum/templates/guideline.latex -o "${BASE_FILE}.tex" "${INPUT_MARKDOWN_FILE}"
   TEXINPUTS="${TEXINPUTS}:/cabforum/" LogAndRun pandoc "${PANDOC_PDF_ARGS[@]}"
-  echo "::set-output name=pdf_file::${BASE_FILE}.pdf"
+  echo "pdf_file=${BASE_FILE}.pdf" >> $GITHUB_OUTPUT
   echo "::endgroup::"
 
   if [ -n "${DIFF_FILE}" ]; then
@@ -82,7 +82,7 @@ if [ "$INPUT_PDF" = "true" ]; then
     TEXINPUTS="${TEXINPUTS}:/cabforum/" LogAndRun xelatex -interaction=nonstopmode --output-directory="${TMP_DIR}" "${OUT_DIFF_TEX}-redline.tex" || true
     if [ -f "${OUT_DIFF_TEX}-redline.pdf" ]; then
       cp "${OUT_DIFF_TEX}-redline.pdf" "${BASE_FILE}-redline.pdf"
-      echo "::set-output name=pdf_redline_file::${BASE_FILE}-redline.pdf"
+      echo "pdf_redline_file=${BASE_FILE}-redline.pdf" >> $GITHUB_OUTPUT
     fi
     echo "::endgroup::"
   fi
@@ -97,7 +97,7 @@ if [ "$INPUT_DOCX" = "true" ]; then
   PANDOC_DOCX_ARGS+=( -o "${BASE_FILE}.docx" "${INPUT_MARKDOWN_FILE}" )
 
   LogAndRun pandoc "${PANDOC_DOCX_ARGS[@]}"
-  echo "::set-output name=docx_file::${BASE_FILE}.docx"
+  echo "docx_file=${BASE_FILE}.docx" >> $GITHUB_OUTPUT
   echo "::endgroup::"
 fi
 
