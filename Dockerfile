@@ -39,6 +39,7 @@ RUN mkdir -p /tmp/fonts && \
 
 # Install Python3 and Pantable
 RUN apk add --update --no-cache python3 py3-pip py3-numpy
+RUN python3 -m pip install pyyaml==5.3.1
 RUN python3 -m pip install pantable==0.13.4
 
 RUN mkdir -p /cabforum
