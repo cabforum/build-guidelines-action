@@ -8,7 +8,7 @@ jobs:
       DOCKER_TAG: build-guidelines-action
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build Image
         run: docker build . --file Dockerfile --tag ${{ env.DOCKER_TAG}} --label "runnumber=${GITHUB_RUN_ID}"
       - name: Save image
@@ -16,7 +16,7 @@ jobs:
           docker save ${{ env.DOCKER_TAG }} |\
           gzip > build-guidelines-action.tgz
       - name: Upload archive
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-guidelines-action
           path: build-guidelines-action.tgz
@@ -30,14 +30,16 @@ jobs:
       DOCKER_TAG: build-guidelines-action
     steps:
       - name: Fetch Image
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-guidelines-action
           path: build-guidelines-action
       - name: Load image
         run: docker load --input build-guidelines-action/build-guidelines-action.tgz
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Test
         run: make -C test test
 
@@ -51,7 +53,7 @@ jobs:
       DOCKER_TAG: build-guidelines-action
     steps:
       - name: Fetch Image
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-guidelines-action
           path: build-guidelines-action

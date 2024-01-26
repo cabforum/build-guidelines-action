@@ -1,5 +1,8 @@
+::group::Extract version
+File broken-links.md is at version vX and commit 60e44c6
+::endgroup::
 ::group::Checking links
-pandoc -f markdown+gfm_auto_identifiers --table-of-contents -s --no-highlight --lua-filter=/cabforum/filters/pandoc-list-table.lua --filter=/usr/bin/pantable -t gfm --lua-filter=/cabforum/filters/broken-links.lua -o /dev/null /data/broken-links.md
+pandoc -f markdown+gfm_auto_identifiers --table-of-contents -s --no-highlight --lua-filter=/cabforum/filters/pandoc-list-table.lua --filter=/usr/bin/pantable -t gfm --lua-filter=/cabforum/filters/broken-links.lua -o /dev/null /data/test/broken-links.md
 ::error::Unable to resolve link to section-four
 Valid identifiers are:
 

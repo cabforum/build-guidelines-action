@@ -4,9 +4,10 @@ endif
 
 SHELL = /bin/bash
 
-makefile_path := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
 TMP := $(shell mktemp -d)
 GITHUB_OUTPUT ?= /dev/null
+GITHUB_SHA ?= $(shell git rev-parse HEAD)
+REPOSITORY = $(shell git rev-parse --show-toplevel)
 
 # Generate a random token per invocation that can be used to disable/enable
 # GitHub command processing.
@@ -18,14 +19,14 @@ test: test-broken-links test-good
 test-broken-links: broken-links.md
 	@echo "::group::$@"
 	@echo "::stop-commands::$(stop_token)"
-	docker run --rm -v $(makefile_path):/data \
+	docker run --rm -v $(REPOSITORY):/data \
 			-e INPUT_LINT=true \
 			-e INPUT_PDF=false \
 			-e INPUT_DOCX=false \
-			-e INPUT_MARKDOWN_FILE=/data/broken-links.md \
-			-e GITHUB_OUTPUT=$GITHUB_OUTPUT \
+			-e INPUT_MARKDOWN_FILE=/data/test/broken-links.md \
+			-v $(GITHUB_OUTPUT):$(GITHUB_OUTPUT) -e GITHUB_OUTPUT=${GITHUB_OUTPUT} \
 			$(DOCKER_TAG) \
-			&> $(TMP)/broken-links-actual.out
+			2>&1 | tee $(TMP)/broken-links-actual.out
 	diff -aurN expected/broken-links.out $(TMP)/broken-links-actual.out
 	@echo "::$(stop_token)::"
 	@echo "::endgroup::"
@@ -39,13 +40,14 @@ test-good: good.pdf good.docx good-redline.pdf
 good.pdf: good.md
 	@echo "::group::$@"
 	@echo "::stop-commands::$(stop_token)"
-	docker run --rm -v $(makefile_path):/data \
+	ls -lah
+	docker run --rm -v $(REPOSITORY):/data \
 		-e INPUT_LINT=false \
 		-e INPUT_PDF=true \
 		-e INPUT_DOCX=false \
 		-e INPUT_DRAFT=true \
-		-e INPUT_MARKDOWN_FILE=/data/good.md \
-		-e GITHUB_OUTPUT=$GITHUB_OUTPUT \
+		-e INPUT_MARKDOWN_FILE=/data/test/good.md \
+		-v $(GITHUB_OUTPUT):$(GITHUB_OUTPUT) -e GITHUB_OUTPUT=${GITHUB_OUTPUT} \
 		$(DOCKER_TAG)
 	@echo "::$(stop_token)::"
 	@echo "::endgroup::"
@@ -53,12 +55,12 @@ good.pdf: good.md
 good.docx: good.md
 	@echo "::group::$@"
 	@echo "::stop-commands::$(stop_token)"
-	docker run --rm -v $(makefile_path):/data \
+	docker run --rm -v $(REPOSITORY):/data \
 		-e INPUT_LINT=false \
 		-e INPUT_PDF=false \
 		-e INPUT_DOCX=true \
-		-e INPUT_MARKDOWN_FILE=/data/good.md \
-		-e GITHUB_OUTPUT=$GITHUB_OUTPUT \
+		-e INPUT_MARKDOWN_FILE=/data/test/good.md \
+		-v $(GITHUB_OUTPUT):$(GITHUB_OUTPUT) -e GITHUB_OUTPUT=${GITHUB_OUTPUT} \
 		$(DOCKER_TAG)
 	@echo "::$(stop_token)::"
 	@echo "::endgroup::"
@@ -66,14 +68,14 @@ good.docx: good.md
 good-redline.pdf: good.md good-diff.md
 	@echo "::group::$@"
 	@echo "::stop-commands::$(stop_token)"
-	docker run --rm -v $(makefile_path):/data \
+	docker run --rm -v $(REPOSITORY):/data \
 		-e INPUT_LINT=false \
 		-e INPUT_PDF=true \
 		-e INPUT_DOCX=false \
 		-e INPUT_DRAFT=true \
-		-e INPUT_DIFF_FILE=/data/good-diff.md \
-		-e INPUT_MARKDOWN_FILE=/data/good.md \
-		-e GITHUB_OUTPUT=$GITHUB_OUTPUT \
+		-e INPUT_DIFF_FILE=/data/test/good-diff.md \
+		-e INPUT_MARKDOWN_FILE=/data/test/good.md \
+		-v $(GITHUB_OUTPUT):$(GITHUB_OUTPUT) -e GITHUB_OUTPUT=${GITHUB_OUTPUT} \
 		$(DOCKER_TAG)
 	@echo "::$(stop_token)::"
 	@echo "::endgroup::"

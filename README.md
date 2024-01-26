@@ -1,4 +1,4 @@
-# CA/Browser Forum Guidline builder action
+# CA/Browser Forum Guideline builder action
 
 This action customizes the [Pandoc dockerfiles](https://github.com/pandoc/dockerfiles)
 for use by [CA/Browser Forum](https://www.cabforum.org) Chartered Working
@@ -87,6 +87,26 @@ The path to the generated DOCX file, if `docx` was `"true"`, relative to
 
 The path to the generated PDF redline, if `pdf` was `"true"` and `diff_file`
 provided a path to a valid Markdown file.
+
+### `file_version`
+
+The version of the file, as extracted from the subtitle of the document.
+
+### `file_commit`
+
+The short commit hash of the file.
+
+### `diff_version`
+
+The version of the diff file, as extracted from the subtitle of the document.
+
+### `diff_commit`
+
+The short commit hash of the diff file.
+
+### `changelog`
+
+A list of commit messages from `diff_commit` to `file_commit`.
 
 ## Example usage
 

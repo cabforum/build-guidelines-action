@@ -24,8 +24,8 @@ RUN tlmgr install \
   tocloft \
   xecjk
 
-# Install bash
-RUN apk add --no-cache bash coreutils
+# Install bash, coreutils and git
+RUN apk add --no-cache bash coreutils git
 
 # Install NotoSerif fonts
 RUN mkdir -p /tmp/fonts && \

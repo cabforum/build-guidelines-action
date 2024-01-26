@@ -31,6 +31,12 @@ outputs:
     description: 'The generated DOCX file (if docx was true), relative to GITHUB_WORKSPACE'
   pdf_redline_file:
     description: 'The generated PDF redline file (if pdf was true and diff_file was supplied), relative to GITHUB_WORKSPACE'
+  file_version:
+    description: 'The version of the file, as extracted from the subtitle of the document'
+  diff_version:
+    description: 'The version of the diff file, as extracted from the subtitle of the document'
+  changelog:
+    description: 'A list of commit messages from diff commit to file commit.'
 runs:
   using: 'docker'
   image: 'Dockerfile'
