@@ -61,7 +61,8 @@ good.docx: good.md
 		-e INPUT_PDF=false \
 		-e INPUT_DOCX=true \
 		-e INPUT_MARKDOWN_FILE=/data/test/good.md \
-		-v $(GITHUB_OUTPUT):$(GITHUB_OUTPUT) -e GITHUB_OUTPUT=${GITHUB_OUTPUT} \
+		-e GITHUB_OUTPUT=${GITHUB_OUTPUT} \
+		-v $(GITHUB_OUTPUT):$(GITHUB_OUTPUT) \
 		$(DOCKER_TAG)
 	@echo "::$(stop_token)::"
 	@echo "::endgroup::"
@@ -76,7 +77,8 @@ good-redline.pdf: good.md good-diff.md
 		-e INPUT_DRAFT=true \
 		-e INPUT_DIFF_FILE=/data/test/good-diff.md \
 		-e INPUT_MARKDOWN_FILE=/data/test/good.md \
-		-v $(GITHUB_OUTPUT):$(GITHUB_OUTPUT) -e GITHUB_OUTPUT=${GITHUB_OUTPUT} \
+		-e GITHUB_OUTPUT=${GITHUB_OUTPUT} \
+		-v $(GITHUB_OUTPUT):$(GITHUB_OUTPUT) \
 		$(DOCKER_TAG)
 	@echo "::$(stop_token)::"
 	@echo "::endgroup::"
