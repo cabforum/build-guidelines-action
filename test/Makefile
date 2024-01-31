@@ -47,7 +47,8 @@ good.pdf: good.md
 		-e INPUT_DOCX=false \
 		-e INPUT_DRAFT=true \
 		-e INPUT_MARKDOWN_FILE=/data/test/good.md \
-		-v $(GITHUB_OUTPUT):$(GITHUB_OUTPUT) -e GITHUB_OUTPUT=${GITHUB_OUTPUT} \
+		-e GITHUB_OUTPUT=${GITHUB_OUTPUT} \
+		-v $(GITHUB_OUTPUT):$(GITHUB_OUTPUT) \
 		$(DOCKER_TAG)
 	@echo "::$(stop_token)::"
 	@echo "::endgroup::"
