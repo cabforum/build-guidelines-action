@@ -140,7 +140,15 @@ if [ "$INPUT_DOCX" = "true" ]; then
   echo "::endgroup::"
 fi
 
+# TODO evaluate to move this entire linting block before any document generation.
 if [ "$INPUT_LINT" = "true" ]; then
+  echo "::group::Linting Markdown"
+  # Enabled checks:
+  # - MD032, https://github.com/markdownlint/markdownlint/blob/main/docs/RULES.md#md032---lists-should-be-surrounded-by-blank-lines
+  # TODO evaluate to allow to override the list of checks.
+  LogAndRun mdl -i -r MD032 "${INPUT_MARKDOWN_FILE}"
+  echo "::endgroup::"
+
   echo "::group::Checking links"
   PANDOC_LINT_ARGS=( "${PANDOC_ARGS[@]}" )
   PANDOC_LINT_ARGS+=( -t gfm )

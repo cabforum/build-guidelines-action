@@ -46,9 +46,11 @@ input file, but with a `docx` extension.
 
 ### `lint`
 
-Check that all self-referencing links resolve. Default: `"false"`.
+Performs linting on the Markdown file. Default: `"false"`.
 
-This runs a simple [Pandoc Lua filter](https://pandoc.org/lua-filters.html) to
+This includes usage of [Markdown lint tool](https://github.com/markdownlint/markdownlint/) to enforce correct document presentation.
+
+Additionally, to check that all self-referencing links resolve, this runs a simple [Pandoc Lua filter](https://pandoc.org/lua-filters.html) to
 check and make sure that links to section headers resolve. Note that Pandoc
 removes leading numbers for sections, so the following would be valid:
 
