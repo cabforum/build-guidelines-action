@@ -1,6 +1,9 @@
 ::group::Extract version
 File broken-links.md is at version v0.0.0 and commit 1e09d61
 ::endgroup::
+::group::Linting Markdown
+mdl -i -r MD032 /data/test/broken-links.md
+::endgroup::
 ::group::Checking links
 pandoc -f markdown+gfm_auto_identifiers --table-of-contents -s --no-highlight --lua-filter=/cabforum/filters/fenced-div.lua --lua-filter=/cabforum/filters/pandoc-list-table.lua --filter=pantable -t gfm --lua-filter=/cabforum/filters/broken-links.lua -o /dev/null /data/test/broken-links.md
 ::error::Unable to resolve link to section-four

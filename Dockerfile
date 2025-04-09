@@ -50,6 +50,10 @@ ENV PATH=/virtualenv/bin:$PATH
 RUN pip install pyyaml==5.3.1
 RUN pip install pantable==0.13.4
 
+# Install Markdown lint tool
+RUN apk add ruby-full
+RUN gem install mdl
+
 RUN mkdir -p /cabforum
 RUN mkdir -p /cabforum/templates
 RUN mkdir -p /cabforum/filters
